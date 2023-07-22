@@ -4,6 +4,7 @@ from flask import jsonify
 from app.parser import userRequestParser
 from app.serializer import user_details
 from app.models import User
+from flask_jwt_extended import create_access_token
 
 @app.route("/test")
 def test():
@@ -59,3 +60,20 @@ class ParticularUser(Resource):
         
         return jsonify(status = 401, message = "User Not Found!!")
     
+@api.route('/user/login')
+class Login(Resource):
+
+    # POST method
+    def post(self):
+        req_body  = userRequestParser.parse_args()
+
+        user = User.query.filter_by(
+            name = req_body['name'],
+            dob = req_body['dob']
+        ).first()
+        
+        if user:
+            access_token = create_access_token(identity=req_body['name'])
+            return jsonify(access_token = access_token, status = 200)
+        
+        return jsonify(message = "'Name' or 'DOB' is incorrect.", status = 401)
