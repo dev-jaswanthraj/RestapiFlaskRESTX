@@ -59,3 +59,9 @@ class ParticularUser(Resource):
         
         return jsonify(status = 401, message = "User Not Found!!")
     
+@app.route('/user/login')
+class Login(Resource):
+
+    # POST method
+    def post(self):
+        pass
